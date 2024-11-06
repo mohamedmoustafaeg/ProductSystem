@@ -1,0 +1,53 @@
+﻿@model IEnumerable<ProductSystem.DataAccess.Models.Product>
+@{
+    ViewBag.Title = "Product List";
+}
+<h2>Product List</h2>
+
+<form method="get" action="@Url.Action("Index")">
+    <input type="text" name="searchString" placeholder="Search Products" value="@ViewContext.HttpContext.Request.Query["searchString"]" />
+    <select name="category">
+        <option value="ALL">All Categories</option>
+        @foreach (var category in ViewBag.Categories)
+        {
+            if (ViewContext.HttpContext.Request.Query["category"] == category.Name)
+            {
+                <option value="@category.Name" selected>@category.Name</option>
+            }
+            else
+            {
+                <option value="@category.Name">@category.Name</option>
+            }
+        }
+    </select>
+    <button type="submit">Filter</button>
+</form>
+
+<table>
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Price</th>
+            <th>Category</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var product in Model)
+        {
+            <tr>
+                <td>@product.Name</td>
+                <td>@product.Price</td>
+                <td>@product.Category.Name</td>
+                <td>
+                    <a href="@Url.Action("Details", new { id = product.Id })">View</a> |
+                    <a href="@Url.Action("Edit", new { id = product.Id })">Edit</a> |
+                    <form action="@Url.Action("Delete", new { id = product.Id })" method="post" style="display:inline;">
+                        <button type="submit" onclick="return confirm('Are you sure?');">Delete</button>
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
